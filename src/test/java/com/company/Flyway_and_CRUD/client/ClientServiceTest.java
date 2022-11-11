@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.*;
+
+import static org.mockito.Mockito.mock;
 
 class ClientServiceTest {
     private Connection connection;
@@ -17,7 +20,7 @@ class ClientServiceTest {
 
     @BeforeEach
     public void beforeEach() throws SQLException {
-        final String connectionUrl="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1";
+        final String connectionUrl = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1";
         new DatabaseInitService().initDb(connectionUrl);
         connection = DriverManager.getConnection(connectionUrl);
         clientService = new ClientService(connection);
@@ -27,16 +30,47 @@ class ClientServiceTest {
     public void AfterEach() throws SQLException {
         connection.close();
     }
+
     @Test
-    public void testThatClientCreatedCorrectly() throws SQLException {
-        Client clientOrigin=new Client();
+    public void testThatClientCreatedCorrectly() throws Exception {
+        List<Client> originalClients = new ArrayList<>();
+        Client fullValueClient = new Client();
+        fullValueClient.setName("Test");
+        originalClients.add(fullValueClient);
 
-        String clientNameOrigin=clientOrigin.getName();
-        long clientSavedId = clientService.create(clientNameOrigin);
-
+        String clientNameOriginal = fullValueClient.getName();
+        long clientSavedId = clientService.create(fullValueClient.getName());
         String clientNameSaved = clientService.getById(clientSavedId);
 
-        Assertions.assertEquals(clientNameOrigin,clientNameSaved);
+        Assertions.assertEquals(clientNameOriginal, clientNameSaved);
+
+    }
+
+    @Test
+    public void ThatNameNotNull() throws SQLException {
+        Connection connection = mock(Connection.class);
+        ClientService clientService = new ClientService(connection);
+        Assertions.assertThrowsExactly(Exception.class, () -> clientService.create(null));
+    }
+
+    @Test
+    public void ThatGetAllListClientHandledCorrectly() throws Exception {
+        Client expected=new Client();
+        expected.setName("TestGetAllList");
+
+        long id = clientService.create(expected.getName());
+        expected.setId(id);
+
+        List <Client> expectedClients= Collections.singletonList(expected);
+        List <Client> actualClients=clientService.listAll();
+        int indexExpectedClient = 0;
+        for (int i = 0; i < actualClients.size();i++) {
+            if(actualClients.get(i).getId()==expected.getId()) {
+                indexExpectedClient=i;
+            }
+        }
+
+        Assertions.assertEquals(expectedClients.get(0).toString(),actualClients.get(indexExpectedClient).toString());
 
     }
 

@@ -1,6 +1,5 @@
 package com.company.Flyway_and_CRUD;
 
-import com.company.Flyway_and_CRUD.services.Database;
 import com.company.Flyway_and_CRUD.services.DatabaseInitService;
 
 public class App {

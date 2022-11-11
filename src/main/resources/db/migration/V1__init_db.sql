@@ -7,7 +7,7 @@ CREATE TABLE worker (
 );
 
 CREATE TABLE client (
-    id IDENTITY PRIMARY KEY,
+    id IDENTITY PRIMARY KEY NOT NULL,
     name VARCHAR (1000) CHECK (CHAR_LENGTH (name) >1)
 );
 
