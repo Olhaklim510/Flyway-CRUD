@@ -5,18 +5,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
-
 import static org.mockito.Mockito.mock;
 
 class ClientServiceTest {
     private Connection connection;
     private ClientService clientService;
-
 
     @BeforeEach
     public void beforeEach() throws SQLException {
@@ -44,17 +41,47 @@ class ClientServiceTest {
 
         Assertions.assertEquals(clientNameOriginal, clientNameSaved);
 
-    }
-
-    @Test
-    public void ThatNameNotNull() throws SQLException {
         Connection connection = mock(Connection.class);
         ClientService clientService = new ClientService(connection);
         Assertions.assertThrowsExactly(Exception.class, () -> clientService.create(null));
+        Assertions.assertThrowsExactly(Exception.class, () -> clientService.create("I"));
     }
 
     @Test
-    public void ThatGetAllListClientHandledCorrectly() throws Exception {
+    public void testThatSetNameHandledCorrectly() throws Exception {
+        Client originalClient=new Client();
+        originalClient.setName("TestSetName");
+
+        long id = clientService.create(originalClient.getName());
+        originalClient.setId(id);
+
+        originalClient.setName("NewTestSetName");
+        clientService.setName(id,originalClient.getName());
+
+        Assertions.assertEquals(id,originalClient.getId());
+        Assertions.assertEquals("NewTestSetName",clientService.getById(id));
+
+        Connection connection = mock(Connection.class);
+        ClientService clientService = new ClientService(connection);
+        Assertions.assertThrowsExactly(Exception.class, () -> clientService.setName(id,null));
+        Assertions.assertThrowsExactly(Exception.class, () -> clientService.setName(id,"I"));
+    }
+
+    @Test
+    public void testThatDeleteByIdHandledCorrectly() throws Exception {
+        Client originalClient=new Client();
+        originalClient.setName("TestDeleteById");
+
+        long id = clientService.create(originalClient.getName());
+        originalClient.setId(id);
+
+        clientService.deleteById(id);
+
+        Assertions.assertNull(clientService.getById(id));
+    }
+
+    @Test
+    public void testThatGetAllListClientHandledCorrectly() throws Exception {
         Client expected=new Client();
         expected.setName("TestGetAllList");
 
@@ -69,9 +96,6 @@ class ClientServiceTest {
                 indexExpectedClient=i;
             }
         }
-
         Assertions.assertEquals(expectedClients.get(0).toString(),actualClients.get(indexExpectedClient).toString());
-
     }
-
 }
