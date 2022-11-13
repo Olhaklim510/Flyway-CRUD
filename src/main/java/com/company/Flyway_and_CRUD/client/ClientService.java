@@ -1,9 +1,6 @@
 package com.company.Flyway_and_CRUD.client;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +13,8 @@ public class ClientService {
     private PreparedStatement getAllSt;
 
     public ClientService(Connection connection) throws SQLException {
-        createSt = connection.prepareStatement("INSERT INTO client (name) VALUES (?)");
+        createSt = connection.prepareStatement("INSERT INTO client (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
         getByIdSt = connection.prepareStatement("SELECT name FROM client WHERE id=?");
-        selectMaxIdSt = connection.prepareStatement("SELECT max(id) AS maxId FROM client");
         getAllSt = connection.prepareStatement("SELECT id, name FROM client");
         setNameSt = connection.prepareStatement("UPDATE client SET name=? WHERE id=?");
         deleteByIdSt = connection.prepareStatement("DELETE FROM client WHERE id=?");
@@ -36,9 +32,9 @@ public class ClientService {
         createSt.executeUpdate();
 
         long id = -1;
-        try (ResultSet rs = selectMaxIdSt.executeQuery()) {
+        try (ResultSet rs = createSt.getGeneratedKeys()) {
             rs.next();
-            id = rs.getLong("maxId");
+            id = rs.getLong(1);
         }
         return id;
     }
@@ -49,11 +45,8 @@ public class ClientService {
             if (!rs.next()) {
                 return null;
             }
-            Client result = new Client();
-            result.setId(id);
-            result.setName(rs.getString("name"));
 
-            return result.getName();
+            return rs.getString("name");
         }
     }
 
