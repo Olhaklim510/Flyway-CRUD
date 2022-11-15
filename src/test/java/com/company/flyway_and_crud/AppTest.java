@@ -1,4 +1,4 @@
-package com.company.Flyway_and_CRUD;
+package com.company.flyway_and_crud;
 
 import org.junit.jupiter.api.Test;
 

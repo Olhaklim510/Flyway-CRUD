@@ -1,4 +1,4 @@
-package com.company.Flyway_and_CRUD.client;
+package com.company.flyway_and_crud.client;
 
 public class Client {
     private long id;

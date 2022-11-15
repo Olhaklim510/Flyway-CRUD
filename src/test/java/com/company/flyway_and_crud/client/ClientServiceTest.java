@@ -1,6 +1,6 @@
-package com.company.Flyway_and_CRUD.client;
+package com.company.flyway_and_crud.client;
 
-import com.company.Flyway_and_CRUD.services.DatabaseInitService;
+import com.company.flyway_and_crud.services.DatabaseInitService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

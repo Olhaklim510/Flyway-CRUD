@@ -1,4 +1,4 @@
-package com.company.Flyway_and_CRUD.services;
+package com.company.flyway_and_crud.services;
 
 import org.flywaydb.core.Flyway;
 

@@ -1,6 +1,6 @@
-package com.company.Flyway_and_CRUD;
+package com.company.flyway_and_crud;
 
-import com.company.Flyway_and_CRUD.services.DatabaseInitService;
+import com.company.flyway_and_crud.services.DatabaseInitService;
 
 public class App {
     public static void main(String[] args) {
